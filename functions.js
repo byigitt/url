@@ -26,7 +26,7 @@ async function change (id, url, token) {
 	}
 }
 
-async function check (id, url, token) {
+async function check (id, token) {
 	const config = {
 		url: `https://discord.com/api/v9/guilds/${id}/vanity-url`,
 		method: 'GET',
