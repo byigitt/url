@@ -1,0 +1,7 @@
+{
+  "id": "sunucu idsi", 
+  "channel": "loglanacak kanal idsi",
+  "code": "değiştirilmesi istenen url",
+  "role": "değiştirilince pinglenecek rolün idsi",
+  "token": "bot tokeni"
+}
