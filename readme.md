@@ -1,5 +1,5 @@
 ## Kurulum
-`npm discord.js node-fetch` ile botun gerektiği modülleri indirin, `node index.js` ile botu başlatın.
+`npm install` ile botun gerektiği modülleri indirin, `node index.js` ile botu başlatın.
 
 ## Sorularınız
 eğer bilmiyorsanız, uğraşmayın. bilen birisi size yardım edecektir ama o kişi ben olmayacağım.
