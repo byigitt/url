@@ -50,7 +50,7 @@ async function check (id, url, token) {
 function time () {
 	const date = new Date();
 	const hour = date.getHours(), minute = date.getMinutes(), second = date.getSeconds();
-	const check = (number) => { return number > 10 ? number : "0" + number };
+	const check = (number) => { return number >= 10 ? number : "0" + number };
 
 	return `${check(hour)}:${check(minute)}:${check(second)}`
 };
