@@ -11,7 +11,7 @@ client.on('ready', async () => {
   await client.channels.fetch(channel)
   const c = client.channels.cache.get(channel)
  
-  let status = 0;
+  let status = 0, lastrate = 0;
   const url = setInterval(async () => {
     if (status !== 0) return; // stop/start 
 
@@ -31,8 +31,8 @@ client.on('ready', async () => {
         if (changeControl.reason == 0) {
           // rate limit, we'll wait
           c.send(`\`[${time()}]\` URL denerken rate limite yakalandık, bekliyoruz. Ratelimit süresi: \`${changeControl.retry.toFixed(0)} saniye\``);
-          status = 1;
-          setTimeout(() => { status = 0 }, 1000 * changeControl.retry);
+          status = 1; lastrate = changeControl.retry;
+          setTimeout(() => { status = 0 }, lastrate > 200 ? (1000 * lastrate) / 5 : 1000 * lastrate);
         }
 
         if (changeControl.reason == 1) {
