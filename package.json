@@ -1,16 +1,17 @@
 {
-  "name": "url",
-  "version": "1.0.0",
-  "description": "discord vanity url spammer",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "vexdy",
-  "license": "ISC",
-  "dependencies": {
-    "discord.js": "^13.8.1",
-    "request": "^2.88.2"
-  }
+	"name": "url",
+	"version": "1.0.7",
+	"description": "Discord vanity URL management bot.",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"test": "echo \"No tests specified\" && exit 1"
+	},
+	"keywords": ["discord", "bot", "vanity-url"],
+	"author": "byigitt",
+	"license": "ISC",
+	"dependencies": {
+		"discord.js": "^13.8.1",
+		"node-fetch": "^2.6.7"
+	}
 }

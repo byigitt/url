@@ -1,50 +1,68 @@
-const { Intents, Client } = require('discord.js')
-const { check, change, time } = require('./functions')
+const { Intents, Client } = require("discord.js");
+const { check, change, time } = require("./functions");
 
-const client = new Client({ intents: [ Intents.FLAGS.GUILDS ]})
-const { id, channel, code, token, role } = require('./config.json')
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const { id, channel, code, token, role } = require("./config.json");
 
-const log = console.log
+const log = console.log;
 
-client.on('ready', async () => {
-  log("Ready") 
-  await client.channels.fetch(channel)
-  const c = client.channels.cache.get(channel)
- 
-  let status = 0, lastrate = 0;
-  const url = setInterval(async () => {
-    if (status !== 0) return; // stop/start 
+client.on("ready", async () => {
+	log("Bot is now ready to operate.");
 
-    let urlControl = await check(id, code, token)
-    if (urlControl.code == code) {
-      c.send(`\`[${time()}]\` İstenilen URL olan \`${code}\` ile şu anda sunucuda bulunan URL aynı. Bot durduruluyor. <@&${role}>`);
-      return clearInterval(url);
-    };
+	await client.channels.fetch(channel);
+	const c = client.channels.cache.get(channel);
 
-    if (!urlControl.error) {
-      let changeControl = await change(id, code, token)
+	let status = 0;
+	let lastRate = 0;
 
-      if (!changeControl.error) {
-        c.send(`\`[${time()}]\` URL, başarılı bir şekilde \`${code}\` olarak değiştirildi. Bot durduruluyor. <@&${role}>`);
-        return clearInterval(url);
-      } else {
-        if (changeControl.reason == 0) {
-          // rate limit, we'll wait
-          c.send(`\`[${time()}]\` URL denerken rate limite yakalandık, bekliyoruz. Ratelimit süresi: \`${changeControl.retry.toFixed(0)} saniye\``);
-          status = 1; lastrate = changeControl.retry;
-          setTimeout(() => { status = 0 }, lastrate > 200 ? (1000 * lastrate) / 5 : 1000 * lastrate);
-        }
+	const urlCheckInterval = setInterval(async () => {
+		if (status !== 0) return;
 
-        if (changeControl.reason == 1) {
-          // taken code
-          c.send(`\`[${time()}]\` \`${code}\` adlı URL ne yazık ki müsait değil. Tekrar denenecek. `)
-        }
-      };
-    } else {
-      c.send(`\`[${time()}]\` \`${code}\` adlı URL müsait fakat değiştirilemedi. Bot durduruluyor. Lütfen manual bir şekilde kontrol yapın/değiştirin. <@&${id}>`);
-      return clearInterval(url);
-    }
-  }, 1000 * 15) // 15 saniye, 15 yerine istediğiniz süreyi saniye türünden değiştirebilirsiniz :)
-})
+		const urlControl = await check(id, token);
+		if (urlControl.code === code) {
+			c.send(
+				`\`[${time()}]\` The desired URL \`${code}\` is already set on the server. Stopping the bot. <@&${role}>`,
+			);
+			return clearInterval(urlCheckInterval);
+		}
 
-client.login(token)
+		if (!urlControl.error) {
+			const changeControl = await change(id, code, token);
+			if (!changeControl.error) {
+				c.send(
+					`\`[${time()}]\` Successfully changed the URL to \`${code}\`. Stopping the bot. <@&${role}>`,
+				);
+				return clearInterval(urlCheckInterval);
+			}
+
+			if (changeControl.reason === 0) {
+				c.send(
+					`\`[${time()}]\` Encountered rate limit while attempting to change URL. Retrying in \`${changeControl.retry.toFixed(
+						0,
+					)} seconds\`.`,
+				);
+				status = 1;
+				lastRate = changeControl.retry;
+				setTimeout(
+					() => {
+						status = 0;
+					},
+					lastRate > 200 ? (1000 * lastRate) / 5 : 1000 * lastRate,
+				);
+			}
+
+			if (changeControl.reason === 1) {
+				c.send(
+					`\`[${time()}]\` The URL \`${code}\` is not available. Retrying...`,
+				);
+			}
+		} else {
+			c.send(
+				`\`[${time()}]\` The URL \`${code}\` is available but could not be changed. Stopping the bot. Please check manually. <@&${id}>`,
+			);
+			return clearInterval(urlCheckInterval);
+		}
+	}, 1000 * 15);
+});
+
+client.login(token);
