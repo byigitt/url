@@ -13,7 +13,7 @@ This project is a Discord bot designed to manage server vanity URLs. The bot che
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/url-bot.git
+git clone https://github.com/byigitt/url-bot.git
 cd url-bot
 ```
 
